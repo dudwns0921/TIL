@@ -12,3 +12,5 @@
 
 - ## [7강. 패키지와 예외 처리](./chapter7.md)
 
+- ## [8강. java.lang 패키지](./chapter8.md)
+

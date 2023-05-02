@@ -14,5 +14,3 @@
 
 - ## [8강. java.lang 패키지](./chapter8.md)
 
-- ## [9강. java.io 패키지와 스트림](./chapter9.md)
-

@@ -22,6 +22,8 @@
 
 - ### [Express](./Express)
 
+- ### [FlowType](./FlowType)
+
 - ### [Git](./Git)
 
 - ### [HTML](./HTML)

@@ -22,6 +22,8 @@
 
 - ### [Express](./Express)
 
+- ### [FlowType](./FlowType)
+
 - ### [Git](./Git)
 
 - ### [HTML](./HTML)
@@ -31,6 +33,8 @@
 - ### [Java](./Java)
 
 - ### [Javascript](./Javascript)
+
+- ### [jsDoc](./jsDoc)
 
 - ### [JWT](./JWT)
 

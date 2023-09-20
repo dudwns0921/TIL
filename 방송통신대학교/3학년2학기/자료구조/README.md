@@ -4,6 +4,8 @@
 
 - ## [2강. 배열](./chapter2.md)
 
-- ## [3강. 배열](./chapter3.md)
+- ## [3강. 스택](./chapter3.md)
+
+- ## [4강. 큐](./chapter4.md)
 
   

@@ -4,6 +4,8 @@
 
 - ### [Pinia](./Pinia)
 
+- ### [Deep Dive](./DeepDive)
+
 ## 문서
 
 - ### [Vue 기초](./Vue_기초.md)

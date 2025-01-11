@@ -50,3 +50,27 @@
   - 데이터를 가져오기 위한 라이브러리가 아님
   - react-query는 데이터를 가져와주지 않음
     - fetch, axios 등을 통해 promise를 반환하면 이를 전역에서 사용할 수 있게끔 처리
+
+### Query Fundamentals
+
+- QueryClient의 핵심은 QueryCache를 보관하고 관리한다는 것
+- cache가 있어야만 제대로 동작 가능
+- 주의해야 할 점
+  - 루트 컴포넌트 밖에 QueryClient를 만들어야 함
+  - 그래야만 리렌더링이 일어나더라도 캐시가 안정적으로 유지됨
+- QueryClientProvider
+  - query client을 생성하고 client prop에 전달
+  - 이 컴포넌트로 루트 컴포넌트를 감싸주면 컴포넌트 트리 어느 곳에서나 쿼리 캐시 사용 가능하게끔 함
+  - 전달되는 것은 절대로 변하지 않는 정적 객체인 query client
+  - 이에 따라 불필요한 리렌더링이 트리거되는 것에 걱정할 필요 없음
+- useQuery
+  - cache와 상호작용하는 법
+  - 내부적으로는 캐시에 있는 데이터가 변경될 때마다 useQuery가 QueryCache를 subscribe해 리렌더링을 함
+    - 어떤 데이터를 사용해야 하는지?
+    - 어디서 데이터를 가져와야 하는지?
+  - queryKey
+    - queryKey로 캐시된 데이터가 있으면 즉시 반환
+    - 무조건 전역적으로 unique해야함
+  - queryFunc
+    - 없을 경우 func을 통해 가져온 데이터를 반환, 그 값을 쿼리에 저장
+    - Promise를 반환해야만 함

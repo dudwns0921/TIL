@@ -53,8 +53,9 @@
 
 ### Query Fundamentals
 
-- QueryClient의 핵심은 QueryCache를 보관하고 관리한다는 것
-- cache가 있어야만 제대로 동작 가능
+- 핵심
+  - QueryClient의 핵심은 QueryCache를 보관하고 관리한다는 것
+
 - 주의해야 할 점
   - 루트 컴포넌트 밖에 QueryClient를 만들어야 함
   - 그래야만 리렌더링이 일어나더라도 캐시가 안정적으로 유지됨
@@ -87,13 +88,217 @@
 
 ### The Query LifeCycle
 
-- react query
-  -  status
-    - pending
-    - success
-    - error
+- react query status
+
+  - pending (default 값ㅎ)
+  - success
+  - error
+
   - 이 상태들은 queryFn에서 반환된 Promise 상태를 그대로 따르고 있음
-  - boolean flag
+  - 관련 boolean flag
     - isPending
     - isSuccess
     - isError
+
+### Queries, Caching, and Observers
+
+- 지금까지 배운 것들
+  - React query는 서버 상태의 필요성을 예민하게 인식하는 비동기 상태 관리자
+  - useQuery 를 통해 데이터를 fetch, QueryCache에 cache
+  - 그리고 Observer을 생성해 해당 캐시의 변경 사항을 수신하고 React에 전달
+- 캐시
+  - 데이터를 저장하고, 나중에 해당 데이터에 더 빨리 엑세스할 수 있도록 하는 소프트웨어
+
+```js
+import * as React from 'react'
+
+function hashKey(queryKey) {
+  return JSON.stringify(queryKey)
+}
+
+export class QueryClient {
+  constructor() {
+    this.cache = new Map()
+    this.listeners = new Set()
+  }
+  subscribe(listener) {
+    this.listeners.add(listener)
+    return () => this.listeners.delete(listener)
+  }
+  get(queryKey) {
+    const hash = hashKey(queryKey)
+
+    if (!this.cache.has(hash)) {
+      this.set(queryKey, {
+        status: "pending"
+      })
+    }
+    
+    return this.cache.get(hash)
+  }
+  set(queryKey, query) {
+    const hash = hashKey(queryKey)
+    this.cache.set(hash, { ...this.cache.get(hash), ...query })
+    this.listeners.forEach((listener) => {
+      listener(queryKey)
+    })
+  }
+  async obtain({ queryKey, queryFn }) {
+    try {
+      if (!this.get(queryKey).promise) {
+        const promise = queryFn()
+        this.set(queryKey, { promise })
+        const data = await promise
+        this.set(queryKey, { 
+          status: "success", data, promise: undefined
+        })
+      }
+    } catch (error) {
+      this.set(queryKey, { 
+        status: "error", error, promise: undefined 
+      })
+    }
+  }
+}
+
+function createObserver(queryClient, options) {
+  return {
+    subscribe(notify) {
+      const unsubscribe = queryClient.subscribe((queryKey) => {
+        if (hashKey(options.queryKey) === hashKey(queryKey)) {
+          notify()
+        }
+      })
+
+      queryClient.obtain(options)
+
+      return unsubscribe
+    },
+    getSnapshot() {
+      return queryClient.get(options.queryKey)
+    }
+  }
+}
+
+export function useQuery(options) {
+  const queryClient = React.useContext(QueryClientContext)
+  const optionsRef = React.useRef(options)
+  const observer = React.useMemo(() => {
+    return createObserver(queryClient, optionsRef.current)
+  }, [queryClient])
+
+  return React.useSyncExternalStore(
+    observer.subscribe,
+    observer.getSnapshot
+  )
+}
+
+const QueryClientContext = React.createContext()
+
+export function QueryClientProvider({ client, children }) {
+  return (
+    <QueryClientContext.Provider value={client}>
+      {children}
+    </QueryClientContext.Provider>
+  )
+}
+```
+
+- useQuery
+
+  - 특정 데이터(`queryKey`)를 가져오기 위해 지정된 함수(`queryFn`)를 호출하고 상태를 관리
+
+  - 데이터의 상태를 자동으로 업데이트합니다. (`pending`, `success`, `error` 등)
+
+  - React 컴포넌트가 데이터 변경 사항에 반응할 수 있도록 구독 기능을 제공
+
+- QueryClient
+
+  - 데이터 캐시를 관리하는 핵심 클래스
+
+  - 데이터(`queryKey`)를 **캐싱**하고, **구독자**(`listeners`)를 관리
+
+  - 주요 메서드:
+    - `get(queryKey)`: 캐시된 데이터를 가져옴
+    - `set(queryKey, query)`: 데이터를 캐시에 저장하고, 구독자들에게 알림
+    - `obtain({ queryKey, queryFn })`: 데이터가 없으면 `queryFn`을 호출해 데이터를 가져옴
+
+- createObserver
+
+  - `QueryClient`와 React의 상태 관리(`useSyncExternalStore`)를 연결하는 중간 역할
+
+  - `subscribe(notify)`: 특정 데이터의 변경 사항을 구독하고, 변경 시 `notify`를 호출
+
+  - `getSnapshot()`: 현재 캐시된 데이터를 반환
+
+- useQuery
+
+  - `createObserver`를 사용하여 데이터의 상태를 구독하고 React 컴포넌트에 데이터를 제공
+
+  - React의 `useSyncExternalStore`를 사용하여 구독-갱신 로직을 구현
+
+- useQuery 동작 과정
+
+1. **`QueryClientContext`에서 `queryClient` 가져오기**
+
+   - `useQuery`는 `QueryClientContext`를 통해 `QueryClient` 인스턴스 생성
+
+   ```js
+   const queryClient = React.useContext(QueryClientContext)
+   ```
+
+2. **옵저버 생성**
+
+   - `createObserver`를 호출하여 현재 `queryKey`에 대한 옵저버를 생성
+   - 옵저버는 `queryKey`의 변경 사항을 구독하고, 최신 상태(`snapshot`)을 제공
+   - useMemo를 사용해 observer 객체의 재생성을 최적화
+
+   ```js
+   const observer = React.useMemo(() => {
+     return createObserver(queryClient, optionsRef.current)
+   }, [queryClient])
+   ```
+
+3. **`useSyncExternalStore`로 구독**
+
+   - `useSyncExternalStore`를 사용하여 옵저버의 `subscribe`와 `getSnapshot`을 연결
+
+   - `subscribe`: 데이터 변경 시 React 컴포넌트를 다시 렌더링하도록 알림
+
+     `getSnapshot`: 현재 데이터를 반환하여 React 컴포넌트가 최신 데이터를 사용하도록 보장.
+
+   ```js
+   return React.useSyncExternalStore(
+     observer.subscribe,
+     observer.getSnapshot
+   )
+   ```
+
+4. **데이터 가져오기 (`obtain`)**
+
+   - `createObserver` 내부에서 `queryClient.obtain`이 호출
+     - `queryKey`로 캐시를 확인.
+     - 데이터가 없으면 `queryFn`을 호출하여 데이터를 가져오고, 상태를 `success` 또는 `error`로 업데이트.
+
+5. **React 컴포넌트에 데이터 제공**
+
+   - `useQuery`는 `useSyncExternalStore`를 통해 캐시된 데이터를 React 컴포넌트에 제공
+   - 컴포넌트는 데이터를 상태로 관리하지 않아도 됨
+
+- 주요 시나리오
+  - 캐시에 데이터가 없는 경우
+
+1. `useQuery` 호출 → 옵저버 생성 → `subscribe` 실행.
+2. 옵저버는 `QueryClient.obtain`을 호출하여 데이터를 가져옴.
+3. `queryFn` 실행 → 성공 시 `status: success`, 실패 시 `status: error`로 상태 업데이트.
+4. 상태 변경 → 구독자들에게 알림 → React 컴포넌트 재렌더링.
+   - 캐시에 데이터가 있는 경우
+
+1. `useQuery` 호출 → 옵저버 생성 → `getSnapshot`으로 데이터 반환.
+2. 구독(`subscribe`)을 설정해 데이터 변경 시 React 컴포넌트가 다시 렌더링되도록 대기.
+
+- useSyncExternalStore
+
+  - **최신 데이터 제공**: `getSnapshot`은 항상 캐시의 최신 상태를 반환.
+
+  - **변경 감지**: `subscribe`는 `QueryClient.set`이 호출될 때 알림을 받아 변경 사항에 반응.

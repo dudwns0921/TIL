@@ -74,3 +74,26 @@
   - queryFunc
     - 없을 경우 func을 통해 가져온 데이터를 반환, 그 값을 쿼리에 저장
     - Promise를 반환해야만 함
+
+### Deduplication
+
+- queryKey에 캐시된 데이터가 있을 경우 queryFn을 중복호출하지 않고 데이터를 그대로 반환하는 것
+- 관찰자 패턴
+  - React 외부에 캐시가 있기 때문에 캐시의 값을 다시 React 컴포넌트로 동기화할 방법
+  - 컴포넌트 마운트시 useQuery 호출에 대해 Observer 생성
+  - Observer는 특정 query key를 바라보고 있음 
+  - 해당 query key에 대한 변경이 생기면 observer가 감지하고 컴포넌트를 리렌더링
+  - 각 컴포넌트가 캐시 데이터를 정확하게 표시하므로 예측 가능성을 높일 수 있고, queryFn을 필요할 때만 호출해 성능을 높일 수 있음
+
+### The Query LifeCycle
+
+- react query
+  -  status
+    - pending
+    - success
+    - error
+  - 이 상태들은 queryFn에서 반환된 Promise 상태를 그대로 따르고 있음
+  - boolean flag
+    - isPending
+    - isSuccess
+    - isError

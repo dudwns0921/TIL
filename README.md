@@ -60,6 +60,8 @@
 
 - ### [Typescript](./Typescript)
 
+- ### [Vanilla Extract](./VanillaExtract)
+
 - ### [Vite](./Vite)
 
 - ### [Vue](./Vue)

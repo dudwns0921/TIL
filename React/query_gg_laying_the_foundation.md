@@ -90,7 +90,7 @@
 
 - react query status
 
-  - pending (default 값ㅎ)
+  - pending (default 값)
   - success
   - error
 

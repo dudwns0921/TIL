@@ -1,4 +1,4 @@
-# Jquery
+# JQuery
 
-- ## [Jqery 시작하기](./Jquery_basic.md)
+- ## [JQery 시작하기](./JQuery_basic.md)
 

@@ -36,6 +36,8 @@
 
 - ### [Javascript](./Javascript)
 
+- ### [JQuery](./JQuery)
+
 - ### [jsDoc](./jsDoc)
 
 - ### [JWT](./JWT)

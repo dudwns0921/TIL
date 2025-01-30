@@ -53,3 +53,141 @@
       - optional catch all segment
 - 404
   - pages 폴더 아래 404.tsx 파일 생성
+
+## 네비게이팅
+
+- 자체적으로 제공하는 내장 컴포넌트인 Link 컴포넌트로 네비게이팅을 제공
+- useRouter hook을 통해 반환받는 router 객체의 push 메서드를 통해서 네비게이팅도 가능
+  - replace
+    - 뒤로가기를 방지하면서 이동하는 메서드
+  - back
+    - 뒤로가기
+
+## 프리페칭
+
+- 현재 사용자가 보고 있는 페이지내에서 이동 가능한 페이지들을 미리 불러오는 기능
+
+- 빠른 페이지 이동을 위해 제공되는 기본 기능
+
+- NextJS에서는 페이지별로 JS 번들, 즉 리액트 컴포넌트를 스플리팅해서 저장해둠
+
+  - 현재 페이지에 필요한 JS 번들만 전달됨
+
+- NextJS에서는 현재 페이지에 대한 JS번들만 받아오기 때문에 매 페이지 이동마다 데이터 요청이 필요
+
+- 이로 인해 페이지 이동이 느려질 수 있기 때문에 프리페칭을 사용
+
+- 링크 컴포넌트로 명시된 경우가 아니라면 프리페칭이 일어나지 않음
+
+- ```js
+  useEffect(()=>{
+  router.prefetch("test")
+  }, [])
+  ```
+
+- router.prefetch 메서드로 프리페칭 가능
+
+## API Routes
+
+- 풀스택 개발이 가능하게 해주는 기능
+- pages/api
+  - api routes로서 응답을 정의하는 파일
+  - 파일명으로 경로가 정해짐
+
+## 스타일링
+
+- 글로벌 css 파일은 App 컴포넌트에서만 import 가능
+- css 모듈 방식으로 import 가능
+
+## 글로벌 레이아웃 설정하기
+
+- 글로벌 레이아웃을 설정할 때는 App 컴포넌트에서 헤더, 푸터등을 적용해 구조를 설정
+
+- ```tsx
+  import { ReactNode } from "react";
+  
+  export default function GlobalLayout({ children }: { children: ReactNode }) {
+    return (
+      <div>
+        <header>헤더</header>
+        <main>{children}</main>
+        <footer>푸터</footer>
+      </div>
+    );
+  }
+  
+  ```
+
+- 글로벌 레이아웃이라는 별도의 컴포넌트를 작성
+
+- ```tsx
+  import GlobalLayout from "@/components/global-layout";
+  import "@/styles/globals.css";
+  import type { AppProps } from "next/app";
+  
+  export default function App({ Component, pageProps }: AppProps) {
+    return (
+      <>
+        <GlobalLayout>
+          <Component {...pageProps} />
+        </GlobalLayout>
+      </>
+    );
+  }
+  
+  ```
+
+- 위와 같이 정의
+
+## 페이지 레이아웃 설정
+
+- 자바스크립트 함수는 Function 객체의 인스턴스로 메서드를 추가할 수 있음
+
+- getLayout이라는 메서드를 추가해 해당 페이지에 적용되어야 할 레이아웃 컴포넌트를 반환
+
+- ```tsx
+  import SearchableLayout from "@/components/SearchableLayout/searchable-layout";
+  import { ReactNode } from "react";
+  
+  export default function Home() {
+    return <h1>인덱스</h1>;
+  }
+  
+  Home.getLayout = (page: ReactNode) => {
+    return <SearchableLayout>{page}</SearchableLayout>;
+  };
+  
+  ```
+
+- 루트 컴포넌트에서 getLayout 메서드를 실행해 반환받은 레이아웃 안에 page 컴포넌트를 전달
+
+-  ```tsx
+   import GlobalLayout from "@/components/GlobalLayout/global-layout";
+   import "@/styles/globals.css";
+   import { NextPage } from "next";
+   import type { AppProps } from "next/app";
+   import { ReactNode } from "react";
+   
+   type NextPageWithLayout = NextPage & {
+     getLayout: (page: ReactNode) => ReactNode;
+   };
+   
+   export default function App({
+     Component,
+     pageProps,
+   }: AppProps & {
+     Component: NextPageWithLayout;
+   }) {
+     const getLayout = Component.getLayout ?? ((page: ReactNode) => page);
+   
+     return (
+       <>
+         <GlobalLayout>{getLayout(<Component {...pageProps} />)}</GlobalLayout>
+       </>
+     );
+   }
+   
+   ```
+
+- 레이아웃을 별도로 사용하지 않는 컴포넌트들을 위해 ?? 연산자를 사용해 getLayout 메서드가 없을 경우 인자로 전달받은 page를 그대로 반환하는 함수로 설정
+- NextPage type에는 getLayout이 없기 때문에 해당 타입을 확장해서 적용

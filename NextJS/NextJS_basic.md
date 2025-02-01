@@ -191,3 +191,100 @@
 
 - 레이아웃을 별도로 사용하지 않는 컴포넌트들을 위해 ?? 연산자를 사용해 getLayout 메서드가 없을 경우 인자로 전달받은 page를 그대로 반환하는 함수로 설정
 - NextPage type에는 getLayout이 없기 때문에 해당 타입을 확장해서 적용
+
+## 사전 렌더링과 데이터페칭
+
+- 기존 리액트 앱은 FCP 이후 **컴포넌트 마운트** 이후에 API 요청이 이루어졌기 때문에 사용자가 백엔드 서버의 데이터를 확인하기까지 오랜 시간이 걸림
+- NextJS은 **사전 렌더링** 때 API 요청을 해 사용자에게 추가적인 로딩 없이 데이터가 로드된 HTML을 한 번에 보여줄 수 있다는 장점
+- 사전 렌더링 때 백엔드 상태에 따라 사용자 경험이 저하될 수도 있어 NextJs에서는 빌드타임 사전 렌더링 등 다양한 사전 렌더링 설정(SSG)도 가능
+
+## SSR
+
+- getServerSideProps 함수가 있는 파일은 SSR로 동작됨
+
+- 페이지 컴포넌트보다 먼저 실행되어서, 컴포넌트에 필요한 데이터 불러오는 함수
+
+- ```js
+  export const getServerSideProps = () => {
+    const data = "hello";
+  
+    return {
+      props: {
+        data,
+      },
+    };
+  };
+  
+  export default function Home(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  ```
+
+- 위와 같이 사용 가능
+
+- NextJs에서는 컴포넌트가 서버에서 실행되기 때문에 window 객체에 접근하면 오류가 발생할 수 있으므로 주의!
+
+- useEffect를 사용하면 마운트 이후 시점에 window 접근 가능
+
+## SSG
+
+- ssr의 경우 요청이 들어올 때마다 백엔드 서버에 필요한 데이터를 받아오기 때문에 데이터가 최신이라는 장점
+
+- 서버 상태 안 좋다거나 데이터 용량이 너무 크면, 사용자 경험이 저하됨
+
+- 이 단점을 해결하기 위한 방법이 SSG
+
+- 빌드 타임에 페이지를 사전 렌더링해두고 다시는 js를 실행(렌더링)하지 않음
+
+- 사전 렌더링에 많은 시간이 소요되는 페이지더라도 사용자 요청에는 매우 빠른 속도로 응답 가능
+
+- 최신 데이터 반영은 어려움
+
+- ```js
+  export const getStaticProps = () => {
+    const data = "hello";
+      
+    if(!data) {
+        return {
+            notFound: true
+        }
+      // 사전 렌더링 이후에도 데이터가 없다면, 404 페이지로 보내는 옵션
+    }
+  
+    return {
+      props: {
+        data,
+      },
+    };
+  };
+  
+  export default function Home(props: InferGetStaticPropsType<typeof getStaticProps>) {
+  ```
+
+- 동적인 경로를 가질 경우 getStaticPath라는 함수가 추가로 필요
+
+- ```js
+  export const getStaticPaths = () => {
+    return {
+      paths: [
+      	{ params: { id:"1" } },
+      	{ params: { id:"2" } },
+          { params: { id:"3" } },
+      ],
+      fallback: false
+    };
+  };
+  ```
+
+- 정의되지 않은 경로에 대한 대비책이 fallback 옵션
+
+  - false일 경우 404 페이지가 렌더링됨
+  - blocking
+    - 즉시 생성, SSR
+    - 빌드 타임에 사전에 생성해두지 않았었던 페이지까지 렌더링해줄 수 있음
+  - true
+    - 즉시 생성 + 페이지만 미리 반환
+    - props에서 전달되는 데이터가 없는 상황이므로 로딩 컴포넌트 등을 띄움
+    - 이후 Props을 계산해 Props만 따로 반환
+
+- fallback 상태란 페이지 컴포넌트가 아직 서버로부터 데이터를 전달받지 못한 상태
+
+  - useRouter 객체에 isFallback이라는 flag를 통해 fallback 상태임을 판별 가능

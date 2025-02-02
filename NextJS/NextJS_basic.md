@@ -288,3 +288,125 @@
 - fallback 상태란 페이지 컴포넌트가 아직 서버로부터 데이터를 전달받지 못한 상태
 
   - useRouter 객체에 isFallback이라는 flag를 통해 fallback 상태임을 판별 가능
+
+## ISR
+
+- 증분 정적 재생성
+
+- SSG 방식으로 생성된 정적 페이지를 일정 주기로 다시 생성하는 방식
+
+- 매우 빠른 속도로 응답이 가능한 SSG 방식의 장점과 최신 데이터 반영이라는 SSR 방식의 장점을 결합한 방식
+
+- ```js
+  export const getStaticProps = () => {
+    const data = "hello";
+    ...
+    return {
+      props: {
+        data,
+      },
+      revalidate: 3,
+      // 3초마다 재생성
+    };
+  };
+  ```
+
+- nextJS 빌드시 revalidate props를 보고 ISR임을 판단
+
+## On Demand ISR
+
+- 요청을 받을 때마다 페이지를 재생성하는 ISR 방식
+
+- 실제로 사용자가 게시글을 수정해서 데이터 업데이트가 필요할 때 revalidate 요청을 보내 페이지를 재생성하는 방식
+
+- API Routes 기능을 활용
+
+  - ```js
+    import { NextApiRequest, NextApiResponse } from "next";
+    
+    export default async function handler(
+      req: NextApiRequest,
+      res: NextApiResponse
+    ) {
+      try {
+        await res.revalidate("/");
+        return res.json({ revalidation: true });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Revalidation Error" });
+      }
+    }
+    
+    ```
+
+## SEO
+
+- ```tsx
+  export default function Page({
+    book,
+  }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+    const router = useRouter();
+    if (router.isFallback) {
+      return (
+        <>
+          <Head>
+            <title>한입 북스</title>
+            <meta property="og:image" content="/thumbnail.png" />
+            <meta property="og:title" content="한입 북스" />
+            <meta
+              property="og:description"
+              content="한입 북스의 등록된 도서들을 만나보세요"
+            />
+          </Head>
+          <div>로딩중...</div>;
+        </>
+      );
+    }
+    if (book === null) {
+      return <div>책 정보가 없습니다.</div>;
+    }
+    return (
+      <>
+        <Head>
+          <title>{book.title}</title>
+          <meta property="og:image" content={book.coverImgUrl} />
+          <meta property="og:title" content={book.title} />
+          <meta property="og:description" content={book.description} />
+        </Head>
+        <div>
+          <div
+            style={{
+              backgroundImage: `url('${book?.coverImgUrl}')`,
+            }}
+            className={style.cover_img_container}
+          >
+            <img src={book?.coverImgUrl} />
+          </div>
+          <div className={style.info_container}>
+            <div className={style.title}>{book?.title}</div>
+            <div className={style.sub_title}>{book?.subTitle}</div>
+            <div className={style.author}>
+              {book?.author} | {book?.publisher}
+            </div>
+            <div className={style.description}>{book?.description}</div>
+          </div>
+        </div>
+      </>
+    );
+  }
+  
+  ```
+
+- Head 태그 안에 title, meta 태그 등을 통해  SEO 설정
+
+- props를 받아오지 못하면 book 관련 데이터가 없기 때문에 SEO 설정 자체가 되지 않음
+
+- props를 받아오지 못했을 때는 isFallback flag를 통해 fallback 상태임을 확인하고 기본 meta 정보들을 반환하도록 설정
+
+## Page Router 단점
+
+- 페이지별 레이아웃 설정이 번거롭다
+- 데이터 페칭이 페이지 컴포넌트에 집중된다
+- 불필요한 컴포넌트들도 JS 번들에 포함된다
+  - 상호작용이 없는 리액트 컴포넌트들은 JS 번들로 다시 전달될 필요가 없음
+  - 하지만 페이지 라우터에서는 상호작용 유무에 상관없이 JS 번들로 모든 컴포넌트를 전달

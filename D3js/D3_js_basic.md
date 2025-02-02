@@ -80,3 +80,66 @@ https://paullabworkspace.notion.site/D3-js-44bff65b641b46eba9b7685860a771cc
     ```
 
 - svg가 나오지 않을 때는 width, height 속성이 설정되어있는지 확인
+
+## 막대 그래프 그리기
+
+- filter, map, forEach 메서드는 D3에서 많이 사용되는 메서드
+
+- ```html
+      <svg width="500" height="500"></svg>
+      <script>
+        const sampleData = [100, 10, 30, 50, 10, 70, 200, 90];
+        const svg = d3.select("svg");
+        const maxHeight = 300
+  
+        sampleData.forEach((data, index) => {
+          svg
+            .append("rect")
+            .attr("height", data)
+            .attr("width", 30)
+            .attr("x", 30 * index) //막대 생성좌표 x 막대의 좌측
+            .attr("y", maxHeight - data); //막대 생성 좌표 y 막대의 윗부분
+        });
+      </script>
+  ```
+
+- svg를 select 메서드로 가져와 데이터를 순회하며 도형을 생성
+
+- x,y 좌표에서부터 height만큼 도형이 생성되기 때문에 최대 y값에서 데이터를 빼는 형태로 설정을 해야함
+
+- ```js
+        sampleData.forEach((data, index) => {
+  		...
+  
+          svg
+            .append("text")
+            .attr("x", 30 * index + 15) //텍스트 생성 좌표 x 막대의 중앙
+            .attr("y", maxHeight - data - 5) //텍스트 생성 좌표 y 막대의 윗부분에서 5만큼 위로
+            .attr("text-anchor", "middle") //텍스트 정렬
+            .text(data); //텍스트 내용
+        });
+  ```
+
+- "텍스트 앵커(text-anchor) 속성은 미리 포맷된 텍스트나 자동 줄 바꿈된 텍스트를 정렬하는 데 사용
+
+- 여기서 줄 바꿈 영역은 inline-size 속성에 의해 결정되며, 주어진 지점을 기준으로 텍스트를 시작, 중간 또는 끝 정렬
+
+- ![image-20250202192125832](.\md-images\image-20250202192125832.png)
+
+- ```js
+        sampleData.forEach((data, index) => {
+          svg
+          ...
+  
+            .transition()
+            .duration(3000)
+            .ease(d3.easeLinear)
+            .style("fill", "red")
+            .attr("y", maxHeight - sampleData2[index])
+            .attr("height", sampleData2[index]);
+        });
+  ```
+
+- 기존 attr로 적용했던 fill을 transition에서는 style로 적용
+
+- y좌표뿐만 아니라 height까지 데이터에 맞게 변경해주어야 정상적으로 동작

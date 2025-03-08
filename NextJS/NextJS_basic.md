@@ -39,7 +39,7 @@
   - _document.tsx
     - 기본 HTML 문서 커스터마이징
 
-## 페이지 라우팅 설정하기
+### 페이지 라우팅 설정하기
 
 - useRouter
   - next/Router의 hook을 사용해서 페이지 라우터 기능 사용 가능
@@ -54,7 +54,7 @@
 - 404
   - pages 폴더 아래 404.tsx 파일 생성
 
-## 네비게이팅
+### 네비게이팅
 
 - 자체적으로 제공하는 내장 컴포넌트인 Link 컴포넌트로 네비게이팅을 제공
 - useRouter hook을 통해 반환받는 router 객체의 push 메서드를 통해서 네비게이팅도 가능
@@ -63,7 +63,7 @@
   - back
     - 뒤로가기
 
-## 프리페칭
+### 프리페칭
 
 - 현재 사용자가 보고 있는 페이지내에서 이동 가능한 페이지들을 미리 불러오는 기능
 
@@ -87,19 +87,19 @@
 
 - router.prefetch 메서드로 프리페칭 가능
 
-## API Routes
+### API Routes
 
 - 풀스택 개발이 가능하게 해주는 기능
 - pages/api
   - api routes로서 응답을 정의하는 파일
   - 파일명으로 경로가 정해짐
 
-## 스타일링
+### 스타일링
 
 - 글로벌 css 파일은 App 컴포넌트에서만 import 가능
 - css 모듈 방식으로 import 가능
 
-## 글로벌 레이아웃 설정하기
+### 글로벌 레이아웃 설정하기
 
 - 글로벌 레이아웃을 설정할 때는 App 컴포넌트에서 헤더, 푸터등을 적용해 구조를 설정
 
@@ -139,7 +139,7 @@
 
 - 위와 같이 정의
 
-## 페이지 레이아웃 설정
+### 페이지 레이아웃 설정
 
 - 자바스크립트 함수는 Function 객체의 인스턴스로 메서드를 추가할 수 있음
 
@@ -192,13 +192,13 @@
 - 레이아웃을 별도로 사용하지 않는 컴포넌트들을 위해 ?? 연산자를 사용해 getLayout 메서드가 없을 경우 인자로 전달받은 page를 그대로 반환하는 함수로 설정
 - NextPage type에는 getLayout이 없기 때문에 해당 타입을 확장해서 적용
 
-## 사전 렌더링과 데이터페칭
+### 사전 렌더링과 데이터페칭
 
 - 기존 리액트 앱은 FCP 이후 **컴포넌트 마운트** 이후에 API 요청이 이루어졌기 때문에 사용자가 백엔드 서버의 데이터를 확인하기까지 오랜 시간이 걸림
 - NextJS은 **사전 렌더링** 때 API 요청을 해 사용자에게 추가적인 로딩 없이 데이터가 로드된 HTML을 한 번에 보여줄 수 있다는 장점
 - 사전 렌더링 때 백엔드 상태에 따라 사용자 경험이 저하될 수도 있어 NextJs에서는 빌드타임 사전 렌더링 등 다양한 사전 렌더링 설정(SSG)도 가능
 
-## SSR
+### SSR
 
 - getServerSideProps 함수가 있는 파일은 SSR로 동작됨
 
@@ -224,7 +224,7 @@
 
 - useEffect를 사용하면 마운트 이후 시점에 window 접근 가능
 
-## SSG
+### SSG
 
 - ssr의 경우 요청이 들어올 때마다 백엔드 서버에 필요한 데이터를 받아오기 때문에 데이터가 최신이라는 장점
 
@@ -289,7 +289,7 @@
 
   - useRouter 객체에 isFallback이라는 flag를 통해 fallback 상태임을 판별 가능
 
-## ISR
+### ISR
 
 - 증분 정적 재생성
 
@@ -313,7 +313,7 @@
 
 - nextJS 빌드시 revalidate props를 보고 ISR임을 판단
 
-## On Demand ISR
+### On Demand ISR
 
 - 요청을 받을 때마다 페이지를 재생성하는 ISR 방식
 
@@ -339,7 +339,7 @@
     
     ```
 
-## SEO
+### SEO
 
 - ```tsx
   export default function Page({
@@ -403,7 +403,7 @@
 
 - props를 받아오지 못했을 때는 isFallback flag를 통해 fallback 상태임을 확인하고 기본 meta 정보들을 반환하도록 설정
 
-## Page Router 단점
+### Page Router 단점
 
 - 페이지별 레이아웃 설정이 번거롭다
 - 데이터 페칭이 페이지 컴포넌트에 집중된다
@@ -619,7 +619,7 @@
 - 페이지 이동을 효율적으로 진행하기 위해 페이지의 일부 데이터를 보
 - RSC Payload에 포함된 레이아웃을 담당하는 컴포넌트를 보관
 
-### 스트리밍과 에러 핸들링
+## 스트리밍과 에러 핸들링
 
 - 데이터가 너무 클 때 데이터를 여러 조각으로 잘게 쪼개 하나씩 클라이언트에게 전송하는 방법을 스트리밍
 
@@ -634,3 +634,317 @@
 
 - 페이지 폴더 하위에 Loading.tsx라는 파일을 만들면 비동기 작업이 수행되어 렌더링되기 전까지 해당 컴포넌트가 노출된다.
 - 해당 경로 안에 있는 모든 비동기 컴포넌트들을 스트리밍되게 바꿔줌
+
+### 컴포넌트 스트리밍
+
+- 페이지 스트리밍은 세밀하게 컴포넌트별로 설정이 불가능
+
+- ```tsx
+      <Suspense key={searchParams.q || ""} fallback={<div>로딩중...</div>}>
+        <SearchResult q={searchParams.q || ""} />
+      </Suspense>
+  ```
+
+- react의 suspense 컴포넌트로 컴포넌트 스트리밍 적용
+
+- 한 번 로딩을 하고 나면 Suspense 안의 컴포넌트에 변화가 일어나도 리로드가 일어나지 않음
+
+  - key를 통해 검색어가 바뀔 때마다 동일한 페이지를 리로드 가능
+  - 리액트에서는 key 값이 바뀌면 컴포넌트가 아예 달라졌다고 판단
+
+### 에러 핸들링
+
+- ```tsx
+  export default function Error({
+    error,
+    reset,
+  }: {
+    error: Error;
+    reset: () => void;
+  }) {
+    const router = useRouter();
+  
+    useEffect(() => {
+      console.error(error);
+    }, [error]);
+  
+    return (
+      <div>
+        <h1>오류가 발생했습니다.</h1>
+        <p>{error.message}</p>
+        <button
+          onClick={() => {
+            startTransition(() => {
+              router.refresh(); // 현재 페이지에 필요한 서버 컴포넌트들을 다시 불러옴
+              reset(); // 에러 상태를 초기화, 컴포넌트들을 다시 렌더링
+            });
+          }}
+        >
+          재시도
+        </button>
+      </div>
+    );
+  }
+  
+  ```
+
+- Next.js에서는 커스텀 에러 바운더리 (Error Boundary) 컴포넌트를 사용하여 특정 페이지나 레이아웃에서 발생한 에러를 감지하고 처리 가능
+
+- 에러 컴포넌트는 `use client`를 선언해야 함
+
+- `error.tsx` 파일을 추가하면 Next.js가 자동으로 해당 경로에서 에러를 감지하고 처리
+
+- `reset()`을 호출하면 에러 상태가 초기화되고, 페이지가 다시 렌더링
+
+- `router.refresh()`를 사용하면 서버에서 데이터를 다시 불러올 수 있음
+
+- `error.tsx` 또는 `error.js` 파일을 특정 경로(페이지, 레이아웃, 글로벌)에 추가하면, Next.js가 자동으로 `error`와 `reset`을 인자로 전달
+
+### 서버 액션
+
+- 브라우저에서 호출할 수 있는 서버에서 실행되는 비동기 함수
+
+- 서버 액션이 필요한 이유
+
+  - 코드가 간결해짐
+  - 보안상 이유:
+    - 일반적인 클라이언트 함수는 브라우저에서 실행되므로, 사용자가 직접 호출할 수 있음.
+    - 반면, `"use server";`를 추가하면 클라이언트에서 호출은 가능하나 코드 자체를 전달받지는 않음
+    - 즉, DB 수정/삭제 등의 민감한 작업을 안전하게 실행할 수 있음.
+  - Next.js의 서버 컴포넌트 구조 때문:
+    - Next.js는 기본적으로 서버와 클라이언트가 분리되어 있음.
+    - 서버에서 실행될 함수는 서버 컴포넌트에서만 실행되어야 하기 때문에 `"use server";`가 필요함.
+
+- 폼과 함께 사용하는 과정
+
+  - 사용자가 `<form>`을 제출하면 `action={createReview}`가 실행됨.
+  - Next.js가 자동으로 `fetch` 요청을 보내지 않고 서버 액션을 호출함.
+  - `createReview` 함수가 서버에서 실행되면서 데이터를 처리함.
+  - 서버에서 응답이 완료되면 Next.js가 UI를 다시 렌더링해 변경 사항을 반영함.
+
+- 데이터가 업데이트되었을 때 *revalidatePath* 메서드를 사용해 Next.js가 해당 페이지를 재검증하도록 함.
+
+  - 클라이언트 컴포넌트에서는 호출 불가
+  - 해당 페이지에 포함된 모든 캐시를 무효화시킴
+  - 풀 라우트 캐시 삭제, 새롭게 생긴 페이지를 풀 라우트 캐시에 저장하지는 않음
+  - 풀 라우트 캐시된 페이지에서 revalidate를 호출하게 되면, 다음에 접속시 다이나믹 페이지를 만드는 것처럼 nextjs가 페이지를 생성
+
+- useActionState
+
+  - 서버 액션의 실행 상태 및 결과를 관리하는 훅
+
+  - ```tsx
+    "use client";
+    import { createReviewAction } from "@/actions/create-review-action";
+    import style from "./review-editor.module.css";
+    import { useActionState } from "react";
+    
+    export function ReviewEditor({ bookId }: { bookId: string }) {
+      const [state, formAction, isPending] = useActionState(
+        createReviewAction,
+        null
+      );
+      return (
+        <section>
+          <form action={formAction} className={style.form_container}>
+            <input type="hidden" name="bookId" value={bookId} readOnly />
+            <div className={style.content_container}>
+              <label htmlFor="content">리뷰 내용</label>
+              <textarea
+                id="content"
+                name="content"
+                placeholder="리뷰 내용"
+                disabled={isPending}
+              />
+            </div>
+            <div className={style.author_container}>
+              <label htmlFor="author">작성자</label>
+              <input
+                type="text"
+                id="author"
+                name="author"
+                placeholder="작성자"
+                disabled={isPending}
+              />
+            </div>
+            <div className={style.submit_container}>
+              <button type="submit" disabled={isPending}>
+                {isPending ? "저장 중..." : "저장하기"}
+              </button>
+            </div>
+          </form>
+        </section>
+      );
+    }
+    
+    ```
+
+  - ```ts
+    "use server";
+    
+    import { revalidatePath } from "next/cache";
+    
+    export async function createReviewAction(_: any, formData: FormData) {
+      const bookId = formData.get("bookId") as string;
+      const author = formData.get("author") as string;
+      const content = formData.get("content") as string;
+    
+      if (!bookId || !author || !content) {
+        return {
+          status: false,
+          error: "입력값이 부족합니다.",
+        };
+      }
+    
+      try {
+        const url = `${process.env.NEXT_PUBLIC_BACK_END_URL}/review`;
+        await fetch(url, {
+          method: "POST",
+          body: JSON.stringify({ bookId, author, content }),
+        });
+        revalidatePath(`/book/${bookId}`);
+        return {
+          status: true,
+          error: "",
+        };
+      } catch (err) {
+        console.error(err);
+        return {
+          status: false,
+          error: `리뷰 저장에 실패했습니다 : ${err}`,
+        };
+      }
+    }
+    
+    ```
+
+  - useActionState의 첫 번째 인자의 action을 보면 시그니처 콜에 state가 포함되어 있음
+
+  - 하지만 실제로 사용하지 않기 때문에 action에서는 언더스코어 및 any로 처리
+
+### 재검증 방법
+
+- revalidatePath(`book/${bookId}`)
+  - 특정 주소에 해당하는 페이지만 재검증 
+- revalidatePath("book/[id]", "page")
+  - 특정 경로의 모든 동적 페이지를 재검증
+- revalidatePath('/(with-searchbar)', 'layout')
+  - 특정 레이아웃을 갖는 모든 페이지를 재검증
+- revalidatePath('/', 'layout')
+  - 모든 데이터 재검증
+- revalidateTag("tag")
+  - 태그 기준, 데이터 캐시 재검증
+  - fetch에 캐시 옵션으로 tag 전달 가능
+  - tanstack-query의 id와 비슷한 개념
+
+## 고급 라우팅 패턴
+
+### 패럴렐 라우트
+
+- 병렬 라우트
+- 여러 페이지 컴포넌트들을 한 번에 렌더링하는 패턴
+
+### Slot
+
+- 폴더명 앞에 @ 사용
+  - url에는 아무런 영향을 끼치지 않음
+- slot 폴더 내부에 page 파일 생성
+- 자신을 감싸고 있는 부모 레이아웃 컴포넌트의 props로 전달됨
+- slot 폴더 내부에 또 다른 라우트 폴더 생성 후 해당 라우트로 이동할 경우
+  - 레이아웃의 slot props에 또다른 라우트 폴더 아래 있는 Page를 렌더링
+  - 만약 현재 라우트에 해당하는 폴더가 없을 경우 기존 Slot을 그대로 렌더링
+  - 하지만 새로고침할 경우 Slot의 이전 값을 찾을 수 없어 404페이지가 뜨게 되므로 디폴트 페이지를 만들어주어야 함
+
+### 인터셉팅 라우트
+
+- 사용자가 초기접속이 아닌 CSR 방식으로 접속하게 되었을 때, 인터셉터 라우트가 동작하게 됨
+
+- 이러한 조건은 고정적
+
+- 인터셉팅 라우트의 대표적인 예시는 인스타그램
+
+  - 게시글 상세 페이지를 게시글 리스트 페이지에서 클릭하면 뒤로 가기를 눌렀을 때 게시글 리스트 페이지로 이동
+  - 상세 페이지에서 새로고침을 하면 게시글 상세 페이지로 완전히 이동
+  - 인터셉팅 라우트로 구현 가능
+
+- 만약 book/[id]를 인터셉팅할 경우, 같은 뎁스에 있다면 (.)book/[id]폴더 내부에 page를 만들면 됨
+
+- Modal
+
+  - ```tsx
+    "use client";
+    
+    import { createPortal } from "react-dom";
+    import style from "./modal.module.css";
+    import { useEffect, useRef } from "react";
+    import { useRouter } from "next/navigation";
+    
+    export function Modal({ children }: { children: React.ReactNode }) {
+      const router = useRouter();
+      const dialogRef = useRef<HTMLDialogElement>(null);
+    
+      useEffect(() => {
+        if (!dialogRef.current?.open) {
+          dialogRef.current?.showModal();
+          dialogRef.current?.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        }
+      }, []);
+    
+      const handleDialogClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+        if ((e.target as any).nodeName === "DIALOG") {
+          router.back();
+        }
+      };
+    
+      const handleDialogClose = () => {
+        router.back();
+      };
+    
+      return createPortal(
+        <dialog
+          onClick={handleDialogClick}
+          onClose={handleDialogClose}
+          ref={dialogRef}
+          className={style.modal}
+        >
+          {children}
+        </dialog>,
+        document.getElementById("modal-root") as HTMLElement
+      );
+    }
+    
+    ```
+
+- 모달은 띄워졌지만 북리스트 페이지가 아닌 북 상세 페이지가 뒤에 깔리는 것을 볼 수 있는데, 이는 패럴랠 라우트를 통해 해결 가능
+- 인덱스 페이지에 slot을 사용할 경우, slot 폴더 내 default 페이지를 사용해 null을 반환해야 404 페이지가 뜨지 않음
+
+## 최적화와 배포
+
+### 이미지 최적화
+
+- webp, AVIF 등의 차세대 형식으로 변환
+- 디바이스 사이즈에 맞는 이미지 불러오기
+- 레이지 로딩 적용하기
+- 블러 이미지 활용하기 등등
+- 위 사항들을 따로 이미지 최적화를 적용하지 않아도 Image 컴포넌트 사용만으로 최적화 가능
+
+- ```js
+  /** @type {import('next').NextConfig} */
+  const nextConfig = {
+    logging: {
+      fetches: {
+        fullUrl: true,
+      },
+    },
+    images: {
+      domains: ["shopping-phinf.pstatic.net"],
+    },
+  };
+  
+  export default nextConfig;
+  ```
+
+- nextjs의 Image 컴포넌트를 사용하기 위해서는 domains 안에 사용할 이미지 url을 넣어주어야 함

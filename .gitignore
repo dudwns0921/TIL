@@ -1,0 +1,5 @@
+.DS_Store
+# Obsidian: 볼트 설정은 공유하되 개인 작업 상태는 뺀다
+.obsidian/workspace*.json
+.obsidian/cache
+.trash/

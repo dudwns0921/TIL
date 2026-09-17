@@ -1,3 +1,3 @@
 # Windows
 
-- ## [Powershell 기초](./Powershell_basic.md)
+- ## [Powershell 기초](./powershell_basic.md)

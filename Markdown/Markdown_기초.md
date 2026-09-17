@@ -54,7 +54,7 @@
   
   - Typora에서는 드래그&드랍 방식으로 바로 이미지를 사용할 수 있도록 해준다.
   
-  ![image_example](../md-images/image1.jpg)
+  ![image_example](./md-images/image1.jpg)
 
 ## 7. Backquotes (인용문)
 

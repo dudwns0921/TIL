@@ -18,7 +18,7 @@
 
 - ## [React CSS Module](./React_CSS_Module.md)
 
-- ## [React react router dom 기초](./react-router-dom_basic.md)
+- ## [React react router dom 기초](./React_react-router-dom_basic.md)
 
 - ## [React Smart&Dumb Components](./React_Smart&Dumb.md)
 
@@ -42,8 +42,8 @@
 
 - ## [React docs Form](./React_docs_Form.md)
 
-- ## [React react router dom params](./react-router-dom_params.md)
+- ## [React react router dom params](./React_react-router-dom_params.md)
 
-- ## [React react router dom navigate](./react-router-dom_navigate.md)
+- ## [React react router dom navigate](./React_react-router-dom_history.md)
 
   

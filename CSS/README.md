@@ -4,7 +4,7 @@
 
 - ## [CSS Grid](./CSS_grid.md)
 
-- ## [CSS Position](./CSS_position.md)
+- ## [CSS Position](./CSS_Position.md)
 
 - ## [CSS in CSS VS CSS in JS](./CSS_in_CSS_vs_CSS_in_JS.md)
 
